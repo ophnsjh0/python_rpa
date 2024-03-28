@@ -27,10 +27,10 @@ class Login:
         if response.status_code == 200:
             auth_token = json.loads(response.text)['imdata'][0]['aaaLogin']['attributes']['token']
             self.cookies = {'APIC-cookie': auth_token}
-            print("Login successful")
+            print(f"{self.switch['name']} Login Successful")
             return self.cookies
         else:
-            print(f"Login failed: {response.text}")
+            print(f"{self.switch['name']} Login failed: {response.text}")
             print(response.status.code)
             exit()
     
@@ -47,9 +47,11 @@ class Login:
         }
         response = self.session.post(url, json=login)
         if response.status_code == 201:
-            print("Login successful")
+            sessionid = json.loads(response.text)['sessionid']
+            print(f"{self.switch['name']} Login successful")
+            return self.cookies
         else:
-            print(f"Login failed: {response.text}")
+            print(f"{self.switch['name']} Login failed: {response.text}")
             print(response.status.code)
             exit()
     
@@ -65,9 +67,9 @@ class Login:
                 look_for_keys=False,
                 allow_agent=False,
             )
-            print("Login successful")
+            print(f"{self.switch['name']} Login successful")
             return ssh_client
         except paramiko.SSHException as e:
-            print(f"Login failed: {e}")
+            print(f"{self.switch['name']} Login failed: {e}")
             return None
         

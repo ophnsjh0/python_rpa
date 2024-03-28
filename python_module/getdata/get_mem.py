@@ -4,52 +4,52 @@ import json
 import time
 from json.decoder import JSONDecoder
 
-class GetInterface:
+class GetMem:
     def __init__(self, switch, session):
         self.switch = switch
         self.session = session
         self.session.verify = False
         self.nodes = ["1101", "1102", "1201"]
-         
+               
     def aci(self, token):
-        interfaces_data = []
+        mem_data = []
         for node in self.nodes:
             requests.pakages.urllib3.disable_warnings()
             self.session.headers.update(token)
-            url = f'https://{self.switch["ip"]}/api/node/class/topology/pod-1/node-{node}/ethpmPhysIf.json'
+            url = f'https://{self.switch["ip"]}/api/node/mo/topology/pod-1/node-{node}/sys/procsys/HDprocSysMem5min-0.json'
             response = self.session.get(url)
             if response.status_code == 200:
-                interfaces = response.json()['imdata']
-                print(f"{node} get interface : ok")
-                interfaces_data.append(interfaces)
+                mem = response.json()['imdata']
+                print(f"{node} get MEM : ok")
+                mem_data.append(mem)
             else:
-                print(f"{node} get interface : Failed")
+                print(f"{node} get MEM : Failed")
                 exit()
-        return interfaces_data
+        return mem_data
     
     def citrix(self, token):
         requests.pakages.urllib3.disable_warnings()
         self.session.headers.update(token)
-        url = f'https://{self.switch["ip"]}/nitro/v1/stat/interface'
+        url = f'https://{self.switch["ip"]}/nitro/v1/stat/ns'
         response = self.session.get(url)
         if response.status_code == 200:
-            interface_data = response.json()['Interface']
-            print(f"{self.switch['name']} Get Interface : ok")
-            return interface_data
+            mem_data = response.json()['ns']
+            print(f"{self.switch['name']} Get MEM : ok")
+            return mem_data
         else:
-            print(f"{self.switch['name']} Get Interface : Failed")
+            print(f"{self.switch['name']} Get MEM : Failed")
             return None
     
     def cisco(self, ssh_client):
-        commands = ["show interface status"]
+        commands = ["show memory summary | include Processor"]
         if ssh_client:
             for command in commands:
                 stdin, stdout, stderr = ssh_client.exec_command(command)
                 time.sleep(1)
-                interface_data = stdout.read().decode('utf-8')
-                print(f"{self.switch['name']} Get Interface : ok")
+                mem_data = stdout.read().decode('utf-8')
+                print(f"{self.switch['name']} Get MEM : ok")
                 ssh_client.close()
-                return interface_data
+                return mem_data
         else:
-            print(f"{self.switch['name']} Get Interface : Failed")
+            print(f"{self.switch['name']} Get MEM : Failed")
             return None

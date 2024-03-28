@@ -15,9 +15,11 @@ class Logout:
         data = {'logout': {}}
         response = self.session.post(url, json=data)
         if response.status_code == 201:
-            print("Logout successful")
+            print(f"{self.switch['name']} Logout successful")
         else:
-            print(f"Logout failed: {response.text}")
+            print(f"{self.switch['name']} Logout failed: {response.text}")
+            print(response.status.code)
+            exit(1)
             
     def aci(self):
         requests.packages.urllib3.disable_warnings()
@@ -31,16 +33,16 @@ class Logout:
         }
         response = self.session.post(url, json=logout)
         if response.status_code == 200:
-            print("Logout successful")
+            print(f"{self.switch['name']} Logout successful")
         else:
-            print(f"Logout failed: {response.text}")
+            print(f"{self.switch['name']} Logout failed: {response.text}")
             print(response.status_code)
             exit(1)
     
     def cisco(self, ssh_client):
         if ssh_client:
             ssh_client.close()
-            print("Logout successful")
+            print(f"{self.switch['name']} Logout successful")
         else:
-            print("Logout failed: Not ssh_client")
+            print(f"{self.switch['name']} Logout failed: Not ssh_client")
         
