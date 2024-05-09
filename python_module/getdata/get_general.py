@@ -27,7 +27,7 @@ class GetGeneral:
             url2 = f'https://{self.switch["ip"]}/api/{node}/class/firmwareRunning.json'
             response2 = self.session.get(url2)
             if response.status_code == 200:
-                general = response.json()['imdata'][0]['firmwareRunning']['attributes']
+                version = response.json()['imdata'][0]['firmwareRunning']['attributes']
                 print(f"{node} get Version : ok")
             else:
                 print(f"{node} get Version : Failed")
@@ -38,7 +38,6 @@ class GetGeneral:
     
     def citrix(self, token):
         general_data = []
-        sum_data = []
         uri_info = ['nsversion', 'nshardware', 'nsconfig', 'nshostname']
         requests.pakages.urllib3.disable_warnings()
         self.session.headers.update(token)
@@ -49,7 +48,6 @@ class GetGeneral:
                 data = response.json()[f'{uri}']
                 general_data.append(data)
                 print(f"{self.switch['name']} Get {uri} : ok")
-                return cpu_data
             else:
                 print(f"{self.switch['name']} Get General : Failed")
                 return None
@@ -58,13 +56,12 @@ class GetGeneral:
     def cisco(self, ssh_client):
         commands = ["show version | begin Base"]
         if ssh_client:
-            for command in commands:
-                stdin, stdout, stderr = ssh_client.exec_command(command)
-                time.sleep(1)
-                general_data = stdout.read().decode('utf-8')
-                print(f"{self.switch['name']} Get General : ok")
-                ssh_client.close()
-                return general_data
+            stdin, stdout, stderr = ssh_client.exec_command(commands)
+            time.sleep(1)
+            general_data = stdout.read().decode('utf-8')
+            print(f"{self.switch['name']} Get General : ok")
+            ssh_client.close()
+            return general_data
         else:
             print(f"{self.switch['name']} Get General : Failed")
             return None

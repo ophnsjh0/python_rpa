@@ -43,13 +43,12 @@ class GetInterface:
     def cisco(self, ssh_client):
         commands = ["show interface status"]
         if ssh_client:
-            for command in commands:
-                stdin, stdout, stderr = ssh_client.exec_command(command)
-                time.sleep(1)
-                interface_data = stdout.read().decode('utf-8')
-                print(f"{self.switch['name']} Get Interface : ok")
-                ssh_client.close()
-                return interface_data
+            stdin, stdout, stderr = ssh_client.exec_command(commands)
+            time.sleep(1)
+            interface_data = stdout.read().decode('utf-8')
+            print(f"{self.switch['name']} Get Interface : ok")
+            ssh_client.close()
+            return interface_data
         else:
             print(f"{self.switch['name']} Get Interface : Failed")
             return None

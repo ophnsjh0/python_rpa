@@ -30,13 +30,12 @@ class GetFan:
     def cisco(self, ssh_client):
         commands = ["show env fan"]
         if ssh_client:
-            for command in commands:
-                stdin, stdout, stderr = ssh_client.exec_command(command)
-                time.sleep(1)
-                fan_data = stdout.read().decode('utf-8')
-                print(f"{self.switch['name']} Get FAN : ok")
-                ssh_client.close()
-                return fan_data
+            stdin, stdout, stderr = ssh_client.exec_command(commands)
+            time.sleep(1)
+            fan_data = stdout.read().decode('utf-8')
+            print(f"{self.switch['name']} Get FAN : ok")
+            ssh_client.close()
+            return fan_data
         else:
             print(f"{self.switch['name']} Get FAN : Failed")
             return None

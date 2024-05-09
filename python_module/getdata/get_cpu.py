@@ -43,13 +43,12 @@ class GetCpu:
     def cisco(self, ssh_client):
         commands = ["show processes cpu | include CPU"]
         if ssh_client:
-            for command in commands:
-                stdin, stdout, stderr = ssh_client.exec_command(command)
-                time.sleep(1)
-                cpu_data = stdout.read().decode('utf-8')
-                print(f"{self.switch['name']} Get GPU : ok")
-                ssh_client.close()
-                return cpu_data
+            stdin, stdout, stderr = ssh_client.exec_command(commands)
+            time.sleep(1)
+            cpu_data = stdout.read().decode('utf-8')
+            print(f"{self.switch['name']} Get GPU : ok")
+            ssh_client.close()
+            return cpu_data
         else:
             print(f"{self.switch['name']} Get GPU : Failed")
             return None
